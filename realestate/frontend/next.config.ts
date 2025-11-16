@@ -13,18 +13,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async rewrites() {
-    // Only use rewrites in development
-    if (process.env.NODE_ENV === 'development') {
-      return [
-        {
-          source: '/api/v1/:path*',
-          destination: 'http://localhost:8000/api/v1/:path*',
-        },
-      ];
-    }
-    return [];
-  },
+  // Remove rewrites entirely - we handle API calls in the code
+  // Rewrites can cause issues in production deployments
 };
 
 export default nextConfig;
