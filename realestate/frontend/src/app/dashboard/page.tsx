@@ -43,7 +43,8 @@ export default function Dashboard() {
       if (searchParams.property_type) params.append('property_type', searchParams.property_type);
 
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/properties?${params.toString()}`);
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+        const response = await fetch(`${apiUrl}/properties?${params.toString()}`);
         if (response.ok) {
           const data = await response.json();
           setProperties(data.properties || []);

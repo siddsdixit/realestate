@@ -7,7 +7,8 @@ export default function HealthCheck() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/v1/health');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+        const response = await fetch(`${apiUrl}/health`);
         const data = await response.json();
         setStatus(data.status);
       } catch (error) {
