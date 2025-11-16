@@ -32,20 +32,17 @@ export default function PropertyDetail() {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        // Only try backend if API URL is explicitly set (not relative URL)
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        if (apiUrl && !apiUrl.startsWith('/')) {
-          try {
-            const response = await fetch(`${apiUrl}/properties/${params.id}`);
-            if (response.ok) {
-              const data = await response.json();
-              setProperty(data);
-              setLoading(false);
-              return;
-            }
-          } catch (fetchError) {
-            console.log('Backend not available, using mock data');
+        // Try Next.js API route first (works in production)
+        try {
+          const response = await fetch(`/api/v1/properties/${params.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setProperty(data);
+            setLoading(false);
+            return;
           }
+        } catch (fetchError) {
+          console.log('API route not available, using mock data');
         }
 
         // Fallback to mock data

@@ -42,21 +42,18 @@ export default function Dashboard() {
       if (searchParams.bathrooms) params.append('bathrooms', searchParams.bathrooms);
       if (searchParams.property_type) params.append('property_type', searchParams.property_type);
 
-      // Only try backend if API URL is explicitly set (not relative URL)
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      if (apiUrl && !apiUrl.startsWith('/')) {
-        try {
-          const response = await fetch(`${apiUrl}/properties?${params.toString()}`);
-          if (response.ok) {
-            const data = await response.json();
-            setProperties(data.properties || []);
-            setResultsCount(data.total || 0);
-            setLoading(false);
-            return;
-          }
-        } catch (fetchError) {
-          console.log('Backend not available, using mock data');
+      // Try Next.js API route first (works in production)
+      try {
+        const response = await fetch(`/api/v1/properties?${params.toString()}`);
+        if (response.ok) {
+          const data = await response.json();
+          setProperties(data.properties || []);
+          setResultsCount(data.total || 0);
+          setLoading(false);
+          return;
         }
+      } catch (fetchError) {
+        console.log('API route not available, using mock data');
       }
 
       // Fallback to mock data
