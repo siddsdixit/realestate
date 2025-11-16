@@ -32,17 +32,20 @@ export default function PropertyDetail() {
   useEffect(() => {
     const fetchProperty = async () => {
       try {
-        try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
-          const response = await fetch(`${apiUrl}/properties/${params.id}`);
-          if (response.ok) {
-            const data = await response.json();
-            setProperty(data);
-            setLoading(false);
-            return;
+        // Only try backend if API URL is explicitly set (not relative URL)
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        if (apiUrl && !apiUrl.startsWith('/')) {
+          try {
+            const response = await fetch(`${apiUrl}/properties/${params.id}`);
+            if (response.ok) {
+              const data = await response.json();
+              setProperty(data);
+              setLoading(false);
+              return;
+            }
+          } catch (fetchError) {
+            console.log('Backend not available, using mock data');
           }
-        } catch (fetchError) {
-          console.log('Backend not available, using mock data');
         }
 
         // Fallback to mock data

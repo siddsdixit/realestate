@@ -6,14 +6,21 @@ export default function HealthCheck() {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
-        const response = await fetch(`${apiUrl}/health`);
-        const data = await response.json();
-        setStatus(data.status);
-      } catch (error) {
-        setStatus('Error');
+      // Only try backend if API URL is explicitly set (not relative URL)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (apiUrl && !apiUrl.startsWith('/')) {
+        try {
+          const response = await fetch(`${apiUrl}/health`);
+          const data = await response.json();
+          setStatus(data.status);
+          return;
+        } catch (error) {
+          setStatus('Backend not available');
+          return;
+        }
       }
+      // No backend configured, show status
+      setStatus('Using mock data (backend not configured)');
     };
 
     fetchData();

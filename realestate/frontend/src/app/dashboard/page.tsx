@@ -42,17 +42,21 @@ export default function Dashboard() {
       if (searchParams.bathrooms) params.append('bathrooms', searchParams.bathrooms);
       if (searchParams.property_type) params.append('property_type', searchParams.property_type);
 
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
-        const response = await fetch(`${apiUrl}/properties?${params.toString()}`);
-        if (response.ok) {
-          const data = await response.json();
-          setProperties(data.properties || []);
-          setResultsCount(data.total || 0);
-          return;
+      // Only try backend if API URL is explicitly set (not relative URL)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (apiUrl && !apiUrl.startsWith('/')) {
+        try {
+          const response = await fetch(`${apiUrl}/properties?${params.toString()}`);
+          if (response.ok) {
+            const data = await response.json();
+            setProperties(data.properties || []);
+            setResultsCount(data.total || 0);
+            setLoading(false);
+            return;
+          }
+        } catch (fetchError) {
+          console.log('Backend not available, using mock data');
         }
-      } catch (fetchError) {
-        console.log('Backend not available, using mock data');
       }
 
       // Fallback to mock data
