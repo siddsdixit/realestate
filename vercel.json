@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd realestate/frontend && npm install && npm run build",
+  "outputDirectory": "realestate/frontend/.next",
+  "installCommand": "cd realestate/frontend && npm install",
+  "framework": "nextjs",
+  "rootDirectory": "realestate/frontend"
+}
+
